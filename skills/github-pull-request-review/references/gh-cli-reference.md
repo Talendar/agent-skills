@@ -39,10 +39,12 @@ gh api --paginate repos/{owner}/{repo}/pulls/{pr}/files --jq '.[].filename'
 
 ```bash
 # PR-level discussion comments (NOT inline review comments)
-gh pr view <PR> --comments
+# Note: avoid `gh pr view --comments` — it triggers a deprecated GraphQL field (projectCards).
+gh api --paginate repos/{owner}/{repo}/issues/{pr}/comments \
+  --jq '.[] | {body, user: .user.login, created_at}'
 ```
 
-**Important:** `gh pr view --comments` does NOT show inline code review comments.
+**Important:** The endpoint above does NOT return inline code review comments.
 
 ## Inline Review Comments
 

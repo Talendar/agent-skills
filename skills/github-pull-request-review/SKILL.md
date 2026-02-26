@@ -1,5 +1,6 @@
 ---
 name: github-pull-request-review
+version: 1.0.1
 description: Comprehensive GitHub pull request review using the gh CLI. Reviews PR diffs against linked issues, repo conventions, and codebase context. Checks for bugs, security risks, style consistency, and goal alignment. Runs available lint, type-check, and test commands. Produces a prioritized report with an approve/block verdict. Use this skill whenever the user asks to "review a PR", "check PR #123", "audit a pull request", "is this PR ready to merge", "review this pull request", "what do you think of PR #N", "code review", "look at this PR", or any request involving evaluating GitHub code changes before merge.
 ---
 
@@ -16,10 +17,10 @@ Follow these phases in order. The user provides a PR number (e.g., `#123` or `12
 
 2. **Fetch PR comments** (PR-level discussion):
    ```bash
-   gh pr view <PR> --comments
+   gh api --paginate repos/{owner}/{repo}/issues/{pr_number}/comments --jq '.[] | {body, user: .user.login, created_at}'
    ```
 
-3. **Fetch inline review comments** (code-level — `gh pr view --comments` does NOT show these):
+3. **Fetch inline review comments** (code-level — the issues endpoint above does NOT include these):
    ```bash
    gh api --paginate repos/{owner}/{repo}/pulls/{pr_number}/comments --jq '.[] | {path, line, body, user: .user.login}'
    ```
