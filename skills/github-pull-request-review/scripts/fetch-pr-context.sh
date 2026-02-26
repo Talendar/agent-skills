@@ -82,7 +82,7 @@ gh pr view "$PR_NUMBER" --repo "$REPO" --json title,body,baseRefName,headRefName
 
 echo ""
 echo "=== PR Comments ==="
-gh pr view "$PR_NUMBER" --repo "$REPO" --comments
+gh api --paginate "repos/${REPO}/issues/${PR_NUMBER}/comments" --jq '.[] | {body, user: .user.login, created_at}' || echo "(Could not fetch PR comments)"
 
 echo ""
 echo "=== Inline Review Comments ==="
